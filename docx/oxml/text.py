@@ -7,7 +7,7 @@ Custom element classes related to text, such as paragraph (CT_P) and runs
 
 from ..enum.text import WD_ALIGN_PARAGRAPH, WD_UNDERLINE
 from .ns import qn
-from .simpletypes import ST_BrClear, ST_BrType
+from .simpletypes import ST_BrClear, ST_BrType, ST_DecimalNumber, ST_String
 from .xmlchemy import (
     BaseOxmlElement, OptionalAttribute, OxmlElement, RequiredAttribute,
     ZeroOrMore, ZeroOrOne
@@ -29,12 +29,30 @@ class CT_Jc(BaseOxmlElement):
     val = RequiredAttribute('w:val', WD_ALIGN_PARAGRAPH)
 
 
+class CT_BookmarkStart(BaseOxmlElement):
+    id = RequiredAttribute('w:id', ST_DecimalNumber)
+    name = RequiredAttribute('w:name', ST_String)
+
+
+class CT_BookmarkEnd(BaseOxmlElement):
+    id = RequiredAttribute('w:id', ST_DecimalNumber)
+
+
+class CT_Hyperlink(BaseOxmlElement):
+    anchor = RequiredAttribute('w:anchor', ST_String)
+    r = ZeroOrMore('w:r')
+
+
 class CT_P(BaseOxmlElement):
     """
     ``<w:p>`` element, containing the properties and text for a paragraph.
     """
+
+    hyperlink = ZeroOrMore('w:hyperlink')
     pPr = ZeroOrOne('w:pPr')
     r = ZeroOrMore('w:r')
+    bookmarkStart = ZeroOrMore('w:bookmarkStart')
+    bookmarkEnd = ZeroOrMore('w:bookmarkEnd')
 
     def _insert_pPr(self, pPr):
         self.insert(0, pPr)

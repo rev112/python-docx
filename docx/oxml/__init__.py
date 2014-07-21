@@ -129,8 +129,11 @@ register_element_cls('w:tcW',       CT_TblWidth)
 register_element_cls('w:tr',        CT_Row)
 
 from docx.oxml.text import (
-    CT_Br, CT_Jc, CT_P, CT_PPr, CT_R, CT_RPr, CT_Text, CT_Underline
+    CT_Br, CT_Jc, CT_P, CT_PPr, CT_R, CT_RPr, CT_Text, CT_Underline, CT_BookmarkStart, CT_BookmarkEnd, CT_Hyperlink
 )
+register_element_cls('w:bookmarkStart', CT_BookmarkStart)
+register_element_cls('w:bookmarkEnd', CT_BookmarkEnd)
+register_element_cls('w:hyperlink', CT_Hyperlink)
 register_element_cls('w:b',          CT_OnOff)
 register_element_cls('w:bCs',        CT_OnOff)
 register_element_cls('w:br',         CT_Br)

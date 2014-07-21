@@ -9,7 +9,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 from .enum.text import WD_BREAK
 from .shared import Parented
 
-
 def boolproperty(f):
     """
     @boolproperty decorator. Decorated method must return the XML element
@@ -79,6 +78,32 @@ class Paragraph(Parented):
         if style:
             run.style = style
         return run
+
+    def add_hyperlink(self, target, text=None):
+        # Compute id and anchor
+        bookmark_id = self.part.next_id
+        anchor = '_Anchor_' + str(bookmark_id)
+
+        # Add hyperlink
+        hl = self._p.add_hyperlink()
+        hyperlink = Hyperlink(hl, self)
+        hyperlink.anchor = anchor
+
+        # Update target
+        target.add_bookmark(bookmark_id, anchor)
+
+        if text:
+            run = hyperlink.add_run(text)
+            run.underline = True
+        return hyperlink
+
+    def add_bookmark(self, bookmark_id, anchor):
+        bookmark_start = self._p.add_bookmarkStart()
+        bookmark_start.id = bookmark_id
+        bookmark_start.name = anchor
+        bookmark_end = self._p.add_bookmarkEnd()
+        bookmark_end.id = bookmark_id
+        return bookmark_start, bookmark_end
 
     @property
     def alignment(self):
@@ -487,3 +512,25 @@ class Text(object):
     def __init__(self, t_elm):
         super(Text, self).__init__()
         self._t = t_elm
+
+
+class Hyperlink(Parented):
+
+    def __init__(self, hyperlink, parent):
+        super(Hyperlink, self).__init__(parent)
+        self._hyperlink = hyperlink
+
+    def add_run(self, text=None):
+        r = self._hyperlink.add_r()
+        run = Run(r, self)
+        if text:
+            run.text = text
+        return run
+
+    @property
+    def anchor(self):
+        return self._hyperlink.anchor
+
+    @anchor.setter
+    def anchor(self, anchor):
+        self._hyperlink.anchor = anchor
