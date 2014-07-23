@@ -80,6 +80,10 @@ class Paragraph(Parented):
         return run
 
     def add_hyperlink(self, target, text=None):
+        if not text:
+            text = self.text
+            self.clear()
+
         # Compute id and anchor
         bookmark_id = self.part.next_id
         anchor = '_Anchor_' + str(bookmark_id)
@@ -92,9 +96,9 @@ class Paragraph(Parented):
         # Update target
         target.add_bookmark(bookmark_id, anchor)
 
-        if text:
-            run = hyperlink.add_run(text)
-            run.underline = True
+        run = hyperlink.add_run(text)
+        run.underline = True
+
         return hyperlink
 
     def add_bookmark(self, bookmark_id, anchor):
