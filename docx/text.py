@@ -156,6 +156,10 @@ class Paragraph(Parented):
         return [Run(r, self) for r in self._p.r_lst]
 
     @property
+    def hyperlinks(self):
+        return [Hyperlink(hl, self) for hl in self._p.hyperlink_lst]
+
+    @property
     def style(self):
         """
         Paragraph style for this paragraph. Read/Write.
@@ -530,6 +534,10 @@ class Hyperlink(Parented):
         if text:
             run.text = text
         return run
+
+    @property
+    def runs(self):
+        return [Run(r, self) for r in self._hyperlink.r_lst ]
 
     @property
     def anchor(self):
